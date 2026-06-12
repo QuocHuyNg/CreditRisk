@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CreditScore AI – Intelligent Credit Scoring</title>
+  <meta name="description" content="AI-powered credit scoring system using machine learning to predict probability of default and generate credit scores on the 300-850 scale." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══ SIDEBAR ═══════════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <span class="material-icons-round">shield</span>
+      </div>
+      <span class="logo-text">CreditScore</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" id="nav-score" onclick="showSection('score')">
+        <span class="material-icons-round">analytics</span>
+        <span>Credit Scoring</span>
+      </a>
+      <a href="#" class="nav-item" id="nav-batch" onclick="showSection('batch')">
+        <span class="material-icons-round">cloud_upload</span>
+        <span>Batch Scoring</span>
+      </a>
+      <a href="#" class="nav-item" id="nav-overview" onclick="showSection('overview')">
+        <span class="material-icons-round">dashboard</span>
+        <span>Overview</span>
+      </a>
+      <a href="#" class="nav-item" id="nav-about" onclick="showSection('about')">
+        <span class="material-icons-round">info</span>
+        <span>About Model</span>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <a href="#" class="nav-item" id="nav-pricing" onclick="showSection('pricing')">
+        <span class="material-icons-round">calculate</span>
+        <span>Pricing Calculator</span>
+      </a>
+      <a href="#" class="nav-item" id="nav-matchmaker" onclick="showSection('matchmaker')">
+        <span class="material-icons-round">local_mall</span>
+        <span>Credit Matchmaker</span>
+      </a>
+      <a href="#" class="nav-item" id="nav-roadmap" onclick="showSection('roadmap')">
+        <span class="material-icons-round">trending_up</span>
+        <span>Improvement Plan</span>
+      </a>
+      <a href="#" class="nav-item" id="nav-profile" onclick="showSection('profile')">
+        <span class="material-icons-round">account_circle</span>
+        <span>User Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-promo">
+      <div class="promo-icon"><span class="material-icons-round">auto_awesome</span></div>
+      <p>Powered by HistGradientBoosting ML Model</p>
+      <span class="promo-badge">AUC 0.87</span>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-avatar">AU</div>
+      <div class="user-info" style="flex: 1; min-width: 0;">
+        <span class="user-name" id="sidebar-username">Admin User</span>
+        <span class="user-email" id="sidebar-email">admin@creditscore.ai</span>
+        <span class="user-role-badge hidden" id="sidebar-role"></span>
+      </div>
+      <button onclick="handleLogout()" title="Đăng xuất" style="color: rgba(255,255,255,0.45); padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; background: transparent; border: none;">
+        <span class="material-icons-round" style="font-size: 20px;">logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN CONTENT ══════════════════════════════════════════════════════ -->
+  <main class="main-content">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <span class="material-icons-round">menu</span>
+      </button>
+      <div class="topbar-right">
+        <button class="btn-icon" title="Notifications">
+          <span class="material-icons-round">notifications</span>
+          <span class="badge">3</span>
+        </button>
+        <div class="topbar-user" id="topbar-user-btn" onclick="toggleUserDropdown(event)" style="position: relative;">
+          <div class="user-avatar sm" id="topbar-avatar">AU</div>
+          <span id="topbar-username">Admin User</span>
+          <span class="material-icons-round">expand_more</span>
+          <div class="user-dropdown hidden" id="user-dropdown">
+            <button onclick="showSection('profile')" class="dropdown-item">
+              <span class="material-icons-round">account_circle</span>
+              User Profile
+            </button>
+            <div class="dropdown-divider"></div>
+            <button onclick="handleLogout()" class="dropdown-item">
+              <span class="material-icons-round">logout</span>
+              Đăng xuất
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ─── SECTION: Credit Scoring ─────────────────────────────────────── -->
+    <section class="content-section active" id="section-score">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Credit Scoring</h1>
+          <p class="page-subtitle">Enter customer information to predict default probability and credit score</p>
+        </div>
+        <button class="btn btn-outline" onclick="resetForm()">
+          <span class="material-icons-round">delete_outline</span>
+          Clear Data
+        </button>
+      </div>
+
+      <div class="scoring-layout">
+        <!-- ── Input Form ── -->
+        <div class="form-card card">
+          <div class="card-header">
+            <h2><span class="material-icons-round">person</span> Customer Information</h2>
+          </div>
+
+          <form id="scoring-form" onsubmit="submitForm(event)">
+            <div class="form-grid">
+
+              <!-- Monthly Income -->
+              <div class="form-group">
+                <label for="MonthlyIncome">
+                  <span class="material-icons-round">payments</span>
+                  Monthly Income ($)
+                  <button type="button" class="tooltip-btn" data-tip="Gross monthly income in USD. Leave blank if unknown (median will be used).">?</button>
+                </label>
+                <input type="number" id="MonthlyIncome" name="MonthlyIncome"
+                  placeholder="e.g. 5000" min="0" step="100" />
+              </div>
+
+              <!-- Age -->
+              <div class="form-group">
+                <label for="age">
+                  <span class="material-icons-round">cake</span>
+                  Age
+                </label>
+                <input type="number" id="age" name="age"
+                  placeholder="e.g. 35" min="18" max="110" required />
+              </div>
+
+              <!-- Revolving Utilization -->
+              <div class="form-group">
+                <label for="RevolvingUtilizationOfUnsecuredLines">
+                  <span class="material-icons-round">credit_card</span>
+                  Credit Utilization Rate
+                  <button type="button" class="tooltip-btn" data-tip="Ratio of revolving credit used vs. available (0.0 = 0%, 1.0 = 100%). E.g. 0.35 means 35% utilized.">?</button>
+                </label>
+                <input type="number" id="RevolvingUtilizationOfUnsecuredLines"
+                  name="RevolvingUtilizationOfUnsecuredLines"
+                  placeholder="e.g. 0.35" min="0" max="2" step="0.01" required />
+              </div>
+
+              <!-- Debt Ratio -->
+              <div class="form-group">
+                <label for="DebtRatio">
+                  <span class="material-icons-round">account_balance</span>
+                  Debt-to-Income Ratio
+                  <button type="button" class="tooltip-btn" data-tip="Monthly debt payments divided by monthly gross income. E.g. 0.4 means 40% of income goes to debt.">?</button>
+                </label>
+                <input type="number" id="DebtRatio" name="DebtRatio"
+                  placeholder="e.g. 0.40" min="0" step="0.01" required />
+              </div>
+
+              <!-- Open Credit Lines -->
+              <div class="form-group">
+                <label for="NumberOfOpenCreditLinesAndLoans">
+                  <span class="material-icons-round">folder_open</span>
+                  Open Credit Lines &amp; Loans
+                  <button type="button" class="tooltip-btn" data-tip="Total number of active credit accounts including loans and credit cards.">?</button>
+                </label>
+                <input type="number" id="NumberOfOpenCreditLinesAndLoans"
+                  name="NumberOfOpenCreditLinesAndLoans"
+                  placeholder="e.g. 6" min="0" step="1" required />
+              </div>
+
+              <!-- Real Estate Loans -->
+              <div class="form-group">
+                <label for="NumberRealEstateLoansOrLines">
+                  <span class="material-icons-round">home</span>
+                  Real Estate Loans
+                  <button type="button" class="tooltip-btn" data-tip="Number of mortgage and real estate loans or credit lines.">?</button>
+                </label>
+                <input type="number" id="NumberRealEstateLoansOrLines"
+                  name="NumberRealEstateLoansOrLines"
+                  placeholder="e.g. 1" min="0" step="1" required />
+              </div>
+
+              <!-- Dependents -->
+              <div class="form-group">
+                <label for="NumberOfDependents">
+                  <span class="material-icons-round">family_restroom</span>
+                  Number of Dependents
+                  <button type="button" class="tooltip-btn" data-tip="Number of dependents excluding the borrower themselves.">?</button>
+                </label>
+                <input type="number" id="NumberOfDependents" name="NumberOfDependents"
+                  placeholder="e.g. 2" min="0" step="1" />
+              </div>
+
+              <!-- Late 30-59 days -->
+              <div class="form-group">
+                <label for="NumberOfTime30-59DaysPastDueNotWorse">
+                  <span class="material-icons-round">schedule</span>
+                  Late Payments (30–59 days)
+                  <button type="button" class="tooltip-btn" data-tip="Number of times borrower has been 30-59 days past due in the last 2 years.">?</button>
+                </label>
+                <input type="number" id="NumberOfTime30-59DaysPastDueNotWorse"
+                  name="NumberOfTime30-59DaysPastDueNotWorse"
+                  placeholder="e.g. 0" min="0" step="1" required />
+              </div>
+
+              <!-- Late 60-89 days -->
+              <div class="form-group">
+                <label for="NumberOfTime60-89DaysPastDueNotWorse">
+                  <span class="material-icons-round">report_problem</span>
+                  Late Payments (60–89 days)
+                  <button type="button" class="tooltip-btn" data-tip="Number of times borrower has been 60-89 days past due in the last 2 years.">?</button>
+                </label>
+                <input type="number" id="NumberOfTime60-89DaysPastDueNotWorse"
+                  name="NumberOfTime60-89DaysPastDueNotWorse"
+                  placeholder="e.g. 0" min="0" step="1" required />
+              </div>
+
+              <!-- Late 90+ days -->
+              <div class="form-group">
+                <label for="NumberOfTimes90DaysLate">
+                  <span class="material-icons-round">error</span>
+                  Late Payments (90+ days)
+                  <button type="button" class="tooltip-btn" data-tip="Number of times borrower has been 90 or more days past due.">?</button>
+                </label>
+                <input type="number" id="NumberOfTimes90DaysLate"
+                  name="NumberOfTimes90DaysLate"
+                  placeholder="e.g. 0" min="0" step="1" required />
+              </div>
+
+            </div><!-- /form-grid -->
+
+            <div class="form-actions">
+              <div class="sample-btns">
+                <span class="sample-label">Quick demo:</span>
+                <button type="button" class="btn btn-sample good" onclick="fillSample('good')">
+                  <span class="material-icons-round">thumb_up</span> Good Profile
+                </button>
+                <button type="button" class="btn btn-sample poor" onclick="fillSample('poor')">
+                  <span class="material-icons-round">thumb_down</span> Poor Profile
+                </button>
+              </div>
+              <button type="submit" class="btn btn-primary btn-submit" id="submit-btn">
+                <span class="material-icons-round">analytics</span>
+                <span id="btn-text">Calculate Credit Score</span>
+                <div class="btn-spinner hidden" id="btn-spinner"></div>
+              </button>
+            </div>
+
+            <p class="form-disclaimer">* Results are for reference purposes only and do not constitute financial advice.</p>
+          </form>
+        </div><!-- /form-card -->
+
+        <!-- ── Results Panel ── -->
+        <div class="results-panel" id="results-panel">
+
+          <!-- Placeholder -->
+          <div class="results-placeholder card" id="results-placeholder">
+            <div class="placeholder-icon">
+              <span class="material-icons-round">insert_chart</span>
+            </div>
+            <h3>Score Result</h3>
+            <p>Fill in the form and click <strong>"Calculate Credit Score"</strong> to see the AI-powered assessment.</p>
+          </div>
+
+          <!-- Actual results (hidden until scored) -->
+          <div class="results-content hidden" id="results-content">
+
+            <!-- Score Card -->
+            <div class="score-card card">
+              <div class="score-card-top">
+                <div class="score-metrics">
+                  <div class="metric-item">
+                    <span class="metric-label">Default Probability (PD)</span>
+                    <span class="metric-value pd-value" id="pd-display">–</span>
+                    <span class="pd-badge" id="pd-badge">–</span>
+                  </div>
+                  <div class="metric-item center">
+                    <span class="metric-label">Credit Score</span>
+                    <span class="metric-value score-value" id="score-display">–</span>
+                    <span class="score-max">/ 850</span>
+                  </div>
+                  <div class="metric-item right">
+                    <span class="metric-label">Risk Tier</span>
+                    <span class="risk-badge" id="risk-badge">–</span>
+                    <span class="risk-desc" id="risk-desc">–</span>
+                  </div>
+                </div>
+
+                <!-- Gauge Chart -->
+                <div class="gauge-container">
+                  <svg class="gauge-svg" viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background arc -->
+                    <path class="gauge-bg" d="M 30 160 A 120 120 0 0 1 270 160" />
+                    <!-- Colored segments -->
+                    <path class="gauge-seg seg-verypoor"  d="M 30   160 A 120 120 0 0 1 52.9 89.5" />
+                    <path class="gauge-seg seg-poor"      d="M 52.9 89.5 A 120 120 0 0 1 112.9 45.9" />
+                    <path class="gauge-seg seg-fair"      d="M 112.9 45.9 A 120 120 0 0 1 187.1 45.9" />
+                    <path class="gauge-seg seg-good"      d="M 187.1 45.9 A 120 120 0 0 1 247.1 89.5" />
+                    <path class="gauge-seg seg-excellent" d="M 247.1 89.5 A 120 120 0 0 1 270   160" />
+                    <!-- Needle -->
+                    <line class="gauge-needle" id="gauge-needle"
+                      x1="150" y1="160" x2="150" y2="52" />
+                    <circle class="gauge-pivot" cx="150" cy="160" r="8" />
+                    <!-- Score text -->
+                    <text class="gauge-score-text" id="gauge-score-text" x="150" y="120">–</text>
+                    <text class="gauge-label-300" x="22"  y="175">300</text>
+                    <text class="gauge-label-850" x="262" y="175">850</text>
+                  </svg>
+                </div>
+              </div>
+            </div><!-- /score-card -->
+
+            <!-- Factor Breakdown -->
+            <div class="factors-card card">
+              <div class="card-header">
+                <h3><span class="material-icons-round">tune</span> Factor Analysis</h3>
+              </div>
+              <div class="factors-grid" id="factors-grid">
+                <!-- filled by JS -->
+              </div>
+            </div>
+
+            <!-- AI Explanation (Waterfall) -->
+            <div class="waterfall-card card">
+              <div class="card-header">
+                <h3><span class="material-icons-round">waterfall_chart</span> AI Score Explanation (Waterfall)</h3>
+              </div>
+              <div class="waterfall-chart-body">
+                <p class="waterfall-intro-text">
+                  Below is how the model arrived at your score of <strong id="wf-final-val">–</strong> starting from a baseline score of <strong id="wf-baseline-val">680</strong> (representing an average borrower profile).
+                </p>
+                <div class="waterfall-bars" id="waterfall-bars">
+                  <!-- filled by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="reco-card card">
+              <div class="card-header">
+                <h3><span class="material-icons-round">lightbulb</span> Recommendations</h3>
+              </div>
+              <ul class="reco-list" id="reco-list">
+                <!-- filled by JS -->
+              </ul>
+            </div>
+
+          </div><!-- /results-content -->
+        </div><!-- /results-panel -->
+      </div><!-- /scoring-layout -->
+
+      <!-- Risk Tier Reference Table -->
+      <div class="tier-table card">
+        <div class="card-header">
+          <h2><span class="material-icons-round">table_chart</span> Risk Tier Reference</h2>
+        </div>
+        <div class="table-wrapper">
+          <table class="tier-reference-table">
+            <thead>
+              <tr>
+                <th>Risk Tier</th>
+                <th>Credit Score</th>
+                <th>Default Probability (PD)</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tier-pill excellent">Excellent</span></td>
+                <td>750 – 850</td>
+                <td>0.00% – 1.00%</td>
+                <td>Very low risk. High-quality customer.</td>
+              </tr>
+              <tr>
+                <td><span class="tier-pill good">Good</span></td>
+                <td>700 – 749</td>
+                <td>1.00% – 3.00%</td>
+                <td>Low risk. Good customer profile.</td>
+              </tr>
+              <tr>
+                <td><span class="tier-pill fair">Fair</span></td>
+                <td>630 – 699</td>
+                <td>3.00% – 7.00%</td>
+                <td>Moderate risk. Monitor closely.</td>
+              </tr>
+              <tr>
+                <td><span class="tier-pill poor">Poor</span></td>
+                <td>550 – 629</td>
+                <td>7.00% – 15.00%</td>
+                <td>High risk. Consider carefully.</td>
+              </tr>
+              <tr>
+                <td><span class="tier-pill verypoor">Very Poor</span></td>
+                <td>300 – 549</td>
+                <td>15.00%+</td>
+                <td>Very high risk. Not recommended for lending.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section><!-- /section-score -->
+
+    <!-- ─── SECTION: Batch Scoring ──────────────────────────────────────── -->
+    <section class="content-section" id="section-batch">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Batch Scoring</h1>
+          <p class="page-subtitle">Upload a list of customers in CSV/Excel format to get predicted credit scores and default probabilities</p>
+        </div>
+        <a href="/api/sample-template" class="btn btn-outline" download>
+          <span class="material-icons-round">download</span>
+          Download CSV Template
+        </a>
+      </div>
+
+      <div class="batch-layout">
+        <!-- Upload Card -->
+        <div class="card upload-card" id="upload-card">
+          <div class="dropzone" id="dropzone" onclick="triggerFileInput()">
+            <span class="material-icons-round dropzone-icon">cloud_upload</span>
+            <h3>Drag &amp; Drop file here</h3>
+            <p>Support CSV, XLSX, XLS files (Max 10MB)</p>
+            <button class="btn btn-primary" type="button" style="margin-top: 15px;">Browse Files</button>
+            <input type="file" id="batch-file-input" accept=".csv, .xlsx, .xls" style="display: none;" onchange="handleFileSelect(event)" />
+          </div>
+          <div class="selected-file-info hidden" id="file-info-container">
+            <div class="file-details">
+              <span class="material-icons-round file-icon">description</span>
+              <div class="file-meta">
+                <span class="file-name" id="selected-file-name">filename.csv</span>
+                <span class="file-size" id="selected-file-size">120 KB</span>
+              </div>
+              <button class="btn-icon delete-btn" onclick="clearSelectedFile()" title="Remove file">
+                <span class="material-icons-round">close</span>
+              </button>
+            </div>
+            <button class="btn btn-accent btn-full" onclick="uploadBatchFile()">
+              <span class="material-icons-round">play_arrow</span>
+              Run Batch Scoring
+            </button>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="card loading-card hidden" id="batch-loading">
+          <div class="spinner"></div>
+          <h3>Processing Batch File...</h3>
+          <p>This may take a moment for larger datasets.</p>
+        </div>
+
+        <!-- Results Card (Hidden by default) -->
+        <div class="batch-results-container hidden" id="batch-results">
+          
+          <!-- Summary Row -->
+          <div class="batch-summary-row">
+            <div class="stat-card card">
+              <div class="stat-icon blue"><span class="material-icons-round">people</span></div>
+              <div class="stat-info">
+                <span class="stat-value" id="batch-total-records">-</span>
+                <span class="stat-label">Total Customers Scored</span>
+              </div>
+            </div>
+            <div class="stat-card card">
+              <div class="stat-icon green"><span class="material-icons-round">speed</span></div>
+              <div class="stat-info">
+                <span class="stat-value" id="batch-avg-score">-</span>
+                <span class="stat-label">Average Credit Score</span>
+              </div>
+            </div>
+            <div class="download-scored-card card">
+              <a href="#" id="batch-download-btn" class="btn btn-accent btn-full">
+                <span class="material-icons-round">download</span>
+                Download Scored File
+              </a>
+              <span class="stat-label" style="text-align: center; margin-top: 8px; display: block; font-size: 11px; opacity: 0.8;">Includes all original columns + predicted scores</span>
+            </div>
+          </div>
+
+          <!-- Tier Distribution Card -->
+          <div class="card tier-distribution-card">
+            <div class="card-header">
+              <h3><span class="material-icons-round">donut_large</span> Risk Tier Distribution</h3>
+            </div>
+            <div class="tier-bars" id="batch-tier-bars">
+              <!-- Tier distributions dynamically injected here -->
+            </div>
+          </div>
+
+          <!-- Macroeconomic Stress Testing Panel -->
+          <div class="card stress-test-card" id="stress-test-panel">
+            <div class="card-header">
+              <h3><span class="material-icons-round">analytics</span> Macroeconomic Stress Testing</h3>
+            </div>
+            
+            <div class="stress-test-content">
+              <p class="stress-desc">Simulate the impact of macroeconomic downturns on the uploaded customer portfolio. The system applies the stress-test scenarios directly to the corresponding financial variables and reruns the AI scoring model.</p>
+              
+              <div class="stress-sliders-grid">
+                <!-- Income Drop Slider -->
+                <div class="stress-slider-group">
+                  <div class="slider-header">
+                    <label for="stress-income-drop">Inflation / Income Drop (Monthly Income Drop)</label>
+                    <span class="slider-value-display" id="stress-income-val">10%</span>
+                  </div>
+                  <input type="range" id="stress-income-drop" min="0" max="30" value="10" step="1" oninput="updateStressValue('income', this.value)" />
+                  <span class="slider-hint">Reduces the Monthly Income of all customers in the file.</span>
+                </div>
+
+                <!-- Debt Increase Slider -->
+                <div class="stress-slider-group">
+                  <div class="slider-header">
+                    <label for="stress-debt-increase">Debt Ratio Spike / Interest Rate Rise (DTI Ratio Increase)</label>
+                    <span class="slider-value-display" id="stress-debt-val">15%</span>
+                  </div>
+                  <input type="range" id="stress-debt-increase" min="0" max="50" value="15" step="1" oninput="updateStressValue('debt', this.value)" />
+                  <span class="slider-hint">Increases the Debt-to-Income (Debt Ratio) of all customers.</span>
+                </div>
+
+                <!-- Utilization Increase Slider -->
+                <div class="stress-slider-group">
+                  <div class="slider-header">
+                    <label for="stress-util-increase">Credit Limit Utilization Spike (Credit Utilization Increase)</label>
+                    <span class="slider-value-display" id="stress-util-val">10%</span>
+                  </div>
+                  <input type="range" id="stress-util-increase" min="0" max="50" value="10" step="1" oninput="updateStressValue('util', this.value)" />
+                  <span class="slider-hint">Increases the credit utilization rate (Revolving Utilization) of all customers.</span>
+                </div>
+              </div>
+              
+              <div class="stress-actions">
+                <button class="btn btn-primary" onclick="runStressSimulation()" id="stress-run-btn">
+                  <span class="material-icons-round">play_arrow</span>
+                  <span id="stress-btn-text">Run Stress Simulation</span>
+                  <div class="btn-spinner hidden" id="stress-spinner"></div>
+                </button>
+              </div>
+
+              <!-- Stress Test Simulation Results (Hidden by default) -->
+              <div class="stress-results-dashboard hidden" id="stress-results-dashboard">
+                <div class="nav-divider" style="margin: 20px 0;"></div>
+                
+                <h4 class="dashboard-subtitle">Stress Scenario Simulation Results</h4>
+
+                <div class="stress-metrics-row">
+                  <div class="stress-metric-card alert-amber">
+                    <span class="metric-label">Avg Credit Score Drop</span>
+                    <span class="metric-value" id="stress-avg-score-delta">-35 pts</span>
+                    <span class="metric-sub" id="stress-avg-score-compare">720 ➔ 685</span>
+                  </div>
+                  <div class="stress-metric-card alert-red">
+                    <span class="metric-label">Portfolio PD Spike</span>
+                    <span class="metric-value" id="stress-avg-pd-delta">+3.3%</span>
+                    <span class="metric-sub" id="stress-avg-pd-compare">2.5% ➔ 5.8%</span>
+                  </div>
+                  <div class="stress-metric-card alert-red">
+                    <span class="metric-label">Degraded Profiles</span>
+                    <span class="metric-value" id="stress-degraded-pct">35.4%</span>
+                    <span class="metric-sub" id="stress-degraded-count">142 / 401 profiles</span>
+                  </div>
+                </div>
+
+                <div class="stress-comparison-layout">
+                  <div class="stress-dist-col">
+                    <h5>Risk Tier Distribution Shifts</h5>
+                    <div class="stress-comparison-bars" id="stress-comparison-bars">
+                      <!-- Comparison progress bars injected here -->
+                    </div>
+                  </div>
+                  
+                  <div class="stress-download-col">
+                    <div class="download-stressed-card card" style="background: rgba(255, 255, 255, 0.05); border: 1px dashed rgba(255,255,255,0.1); width: 100%;">
+                      <a href="#" id="stress-download-btn" class="btn btn-accent btn-full" download>
+                        <span class="material-icons-round">download</span>
+                        Download Stressed Results (CSV)
+                      </a>
+                      <span class="stat-label" style="text-align: center; margin-top: 8px; display: block; font-size: 11px; opacity: 0.8;">Contains all original columns + Stressed Credit Score and PD columns</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detail Table Card -->
+          <div class="card table-card">
+            <div class="card-header">
+              <h3><span class="material-icons-round">list_alt</span> Scored Customers Preview (First 50 records)</h3>
+            </div>
+            <div class="table-wrapper">
+              <table class="batch-preview-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Age</th>
+                    <th>Monthly Income</th>
+                    <th>Util %</th>
+                    <th>Debt Ratio</th>
+                    <th>Credit Score</th>
+                    <th>Default Prob %</th>
+                    <th>Risk Tier</th>
+                  </tr>
+                </thead>
+                <tbody id="batch-table-body">
+                  <!-- Rows dynamically injected here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION: Overview ────────────────────────────────────────────── -->
+    <section class="content-section" id="section-overview">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Overview</h1>
+          <p class="page-subtitle">Model performance summary and dataset statistics</p>
+        </div>
+      </div>
+
+      <div class="overview-grid">
+        <div class="stat-card card">
+          <div class="stat-icon blue"><span class="material-icons-round">people</span></div>
+          <div class="stat-info">
+            <span class="stat-value">150,000</span>
+            <span class="stat-label">Training Samples</span>
+          </div>
+        </div>
+        <div class="stat-card card">
+          <div class="stat-icon green"><span class="material-icons-round">trending_up</span></div>
+          <div class="stat-info">
+            <span class="stat-value">0.8684</span>
+            <span class="stat-label">ROC-AUC Score</span>
+          </div>
+        </div>
+        <div class="stat-card card">
+          <div class="stat-icon purple"><span class="material-icons-round">bar_chart</span></div>
+          <div class="stat-info">
+            <span class="stat-value">0.7368</span>
+            <span class="stat-label">Gini Coefficient</span>
+          </div>
+        </div>
+        <div class="stat-card card">
+          <div class="stat-icon orange"><span class="material-icons-round">show_chart</span></div>
+          <div class="stat-info">
+            <span class="stat-value">0.5804</span>
+            <span class="stat-label">KS Statistic</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="overview-cards">
+        <div class="card overview-detail">
+          <div class="card-header">
+            <h3><span class="material-icons-round">model_training</span> Model Details</h3>
+          </div>
+          <div class="detail-list">
+            <div class="detail-row"><span>Algorithm</span><strong>HistGradientBoostingClassifier</strong></div>
+            <div class="detail-row"><span>Library</span><strong>scikit-learn</strong></div>
+            <div class="detail-row"><span>Max Iterations</span><strong>100</strong></div>
+            <div class="detail-row"><span>Learning Rate</span><strong>0.05</strong></div>
+            <div class="detail-row"><span>Train/Val Split</span><strong>80% / 20%</strong></div>
+            <div class="detail-row"><span>Score Scale</span><strong>300 – 850 (FICO)</strong></div>
+            <div class="detail-row"><span>Missing Value Handling</span><strong>Native (built-in)</strong></div>
+          </div>
+        </div>
+
+        <div class="card overview-detail">
+          <div class="card-header">
+            <h3><span class="material-icons-round">dataset</span> Dataset Info</h3>
+          </div>
+          <div class="detail-list">
+            <div class="detail-row"><span>Source</span><strong>Give Me Some Credit (Kaggle)</strong></div>
+            <div class="detail-row"><span>Training Rows</span><strong>150,000</strong></div>
+            <div class="detail-row"><span>Features</span><strong>10 variables</strong></div>
+            <div class="detail-row"><span>Target</span><strong>SeriousDlqin2yrs</strong></div>
+            <div class="detail-row"><span>Default Rate</span><strong>~6.68%</strong></div>
+            <div class="detail-row"><span>Score Base</span><strong>600 pts, PDO = 50</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card tier-perf">
+        <div class="card-header">
+          <h3><span class="material-icons-round">verified</span> Tier Performance (Validation Set)</h3>
+        </div>
+        <div class="table-wrapper">
+          <table class="tier-reference-table">
+            <thead>
+              <tr>
+                <th>Risk Tier</th>
+                <th>Customers</th>
+                <th>Defaults</th>
+                <th>Actual Default Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tier-pill excellent">Excellent</span></td>
+                <td>1,482</td>
+                <td>4</td>
+                <td><strong style="color:#22c55e">0.27%</strong></td>
+              </tr>
+              <tr>
+                <td><span class="tier-pill good">Good</span></td>
+                <td>9,323</td>
+                <td>68</td>
+                <td><strong style="color:#16a34a">0.73%</strong></td>
+              </tr>
+              <tr>
+                <td><span class="tier-pill fair">Fair</span></td>
+                <td>9,866</td>
+                <td>239</td>
+                <td><strong style="color:#d97706">2.42%</strong></td>
+              </tr>
+              <tr>
+                <td><span class="tier-pill poor">Poor</span></td>
+                <td>6,338</td>
+                <td>585</td>
+                <td><strong style="color:#ea580c">9.23%</strong></td>
+              </tr>
+              <tr>
+                <td><span class="tier-pill verypoor">Very Poor</span></td>
+                <td>2,991</td>
+                <td>1,109</td>
+                <td><strong style="color:#dc2626">37.08%</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION: About Model ─────────────────────────────────────────── -->
+    <section class="content-section" id="section-about">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">About the Model</h1>
+          <p class="page-subtitle">Technical details and methodology</p>
+        </div>
+      </div>
+      <div class="about-grid">
+        <div class="card about-card">
+          <div class="about-icon blue"><span class="material-icons-round">psychology</span></div>
+          <h3>HistGradientBoosting</h3>
+          <p>A high-performance gradient boosting algorithm inspired by LightGBM, built into scikit-learn. It handles missing values natively and is optimized for large datasets.</p>
+        </div>
+        <div class="card about-card">
+          <div class="about-icon green"><span class="material-icons-round">speed</span></div>
+          <h3>Probability of Default</h3>
+          <p>The model outputs a probability (0–1) of a borrower experiencing serious delinquency (90+ days late) within 2 years, converted to the 300–850 credit score scale.</p>
+        </div>
+        <div class="card about-card">
+          <div class="about-icon purple"><span class="material-icons-round">swap_vert</span></div>
+          <h3>Score Conversion</h3>
+          <p>Uses the standard banking formula: <code>Score = Offset − Factor × ln(PD / (1−PD))</code> with Base Score = 600 and PDO = 50 (points to double the odds).</p>
+        </div>
+        <div class="card about-card">
+          <div class="about-icon orange"><span class="material-icons-round">gpp_good</span></div>
+          <h3>Model Validation</h3>
+          <p>Validated on 30,000 held-out samples. KS = 0.58 indicates excellent separation between good and bad borrowers. Gini = 0.74 confirms strong discriminatory power.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION: Pricing Calculator ───────────────────────── -->
+    <section class="content-section" id="section-pricing">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Risk-Based Loan Pricing</h1>
+          <p class="page-subtitle">Calculate optimal interest rates, approved limits, and monthly payments based on credit score</p>
+        </div>
+        <button class="btn btn-outline" onclick="importToPricing()">
+          <span class="material-icons-round">download</span>
+          Import Last Score
+        </button>
+      </div>
+
+      <div class="pricing-layout">
+        <!-- Input & Details Card -->
+        <div class="card pricing-input-card">
+          <div class="card-header">
+            <h2><span class="material-icons-round">payments</span> Loan Configuration</h2>
+          </div>
+          <div class="pricing-card-body">
+            <!-- Score & Rate stats -->
+            <div class="pricing-stats-grid">
+              <div class="p-stat-box">
+                <span class="p-stat-label">Credit Score</span>
+                <input type="number" id="pr-score-input" class="pricing-score-input" value="680" min="300" max="850" oninput="onPricingScoreChange(this.value)" />
+                <span class="p-tier-badge fair" id="pr-tier-badge">Fair</span>
+              </div>
+              <div class="p-stat-box">
+                <span class="p-stat-label">Max Approved Loan Limit</span>
+                <span class="p-stat-large-val" id="pr-max-loan-limit">$50,000</span>
+              </div>
+              <div class="p-stat-box">
+                <span class="p-stat-label">Interest Rate (Annual)</span>
+                <span class="p-stat-large-val highlight" id="pr-interest-rate">8.5%</span>
+              </div>
+            </div>
+
+            <div class="pricing-divider"></div>
+
+            <!-- Loan Amount Slider -->
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span class="slider-label"><span class="material-icons-round">monetization_on</span> Requested Loan Amount ($)</span>
+                <span class="slider-value" id="pr-val-amount">$10,000</span>
+              </div>
+              <input type="range" class="slider" id="pr-amount-slider" min="1000" max="50000" step="500" value="10000"
+                oninput="onPricingSlider('amount', this.value)" />
+              <div class="slider-minmax"><span id="pr-slider-min-lbl">$1,000</span><span id="pr-slider-max-lbl">$50,000</span></div>
+            </div>
+
+            <!-- Loan Term Select (Chips) -->
+            <div class="form-group" style="margin-top: 24px;">
+              <label class="chip-label"><span class="material-icons-round">calendar_today</span> Loan Term (Months)</label>
+              <div class="term-chips" id="pr-term-chips">
+                <button class="term-chip active" onclick="selectPricingTerm(12)">12 Months</button>
+                <button class="term-chip" onclick="selectPricingTerm(24)">24 Months</button>
+                <button class="term-chip" onclick="selectPricingTerm(36)">36 Months</button>
+                <button class="term-chip" onclick="selectPricingTerm(48)">48 Months</button>
+                <button class="term-chip" onclick="selectPricingTerm(60)">60 Months</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output Column -->
+        <div class="pricing-output-col">
+          <!-- Monthly Payment summary -->
+          <div class="card pricing-summary-card">
+            <div class="p-summary-title">Estimated Monthly Payment</div>
+            <div class="p-summary-emi" id="pr-emi-display">$912.20</div>
+            <div class="p-summary-sub">Principal + Interest</div>
+            
+            <div class="p-summary-details">
+              <div class="p-det-row">
+                <span>Total Principal</span>
+                <span id="pr-tot-principal">$10,000</span>
+              </div>
+              <div class="p-det-row">
+                <span>Total Interest Cost</span>
+                <span id="pr-tot-interest">$456.40</span>
+              </div>
+              <div class="p-det-row total">
+                <span>Total Repayment</span>
+                <span id="pr-tot-payment">$10,456.40</span>
+              </div>
+            </div>
+
+            <!-- visual simple breakdown bar -->
+            <div class="p-breakdown-bar-wrap">
+              <div class="p-breakdown-bar">
+                <div class="p-bar-part principal" id="pr-bar-principal" style="width: 90%"></div>
+                <div class="p-bar-part interest" id="pr-bar-interest" style="width: 10%"></div>
+              </div>
+              <div class="p-breakdown-legends">
+                <span class="legend principal">Principal (<span id="pr-pct-principal">90%</span>)</span>
+                <span class="legend interest">Interest (<span id="pr-pct-interest">10%</span>)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Amortization Schedule Card -->
+          <div class="card amortization-card" style="padding: 0;">
+            <div class="card-header" style="padding: 16px 20px 12px; border-bottom: 1px solid var(--slate-150);">
+              <h3><span class="material-icons-round">table_chart</span> Amortization Schedule</h3>
+            </div>
+            <div class="amortization-table-wrapper">
+              <table class="amort-table">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Payment</th>
+                    <th>Principal</th>
+                    <th>Interest</th>
+                    <th>Balance</th>
+                  </tr>
+                </thead>
+                <tbody id="pr-amort-tbody">
+                  <!-- filled by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- /section-pricing -->
+
+    <!-- ─── SECTION: Improvement Roadmap ─────────────────────────────────── -->
+    <section class="content-section" id="section-roadmap">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Score Improvement Plan</h1>
+          <p class="page-subtitle">Enter a customer profile to see a concrete step-by-step improvement roadmap</p>
+        </div>
+        <button class="btn btn-outline" onclick="importToRoadmap()">
+          <span class="material-icons-round">download</span>
+          Import Last Score
+        </button>
+      </div>
+
+      <div class="roadmap-layout">
+        <!-- Input Form -->
+        <div class="card roadmap-form-card">
+          <div class="card-header">
+            <h2><span class="material-icons-round">person</span> Current Profile</h2>
+          </div>
+          <form id="roadmap-form" onsubmit="submitRoadmap(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Monthly Income ($)</label>
+                <input type="number" id="rm-MonthlyIncome" placeholder="e.g. 3000" min="0" step="100" />
+              </div>
+              <div class="form-group">
+                <label>Age</label>
+                <input type="number" id="rm-age" placeholder="e.g. 30" min="18" max="110" required />
+              </div>
+              <div class="form-group">
+                <label>Credit Utilization (0–1)</label>
+                <input type="number" id="rm-RevolvingUtilizationOfUnsecuredLines" placeholder="e.g. 0.75" min="0" max="2" step="0.01" required />
+              </div>
+              <div class="form-group">
+                <label>Debt-to-Income Ratio (0–1)</label>
+                <input type="number" id="rm-DebtRatio" placeholder="e.g. 0.50" min="0" step="0.01" required />
+              </div>
+              <div class="form-group">
+                <label>Open Credit Lines</label>
+                <input type="number" id="rm-NumberOfOpenCreditLinesAndLoans" placeholder="e.g. 8" min="0" step="1" required />
+              </div>
+              <div class="form-group">
+                <label>Real Estate Loans</label>
+                <input type="number" id="rm-NumberRealEstateLoansOrLines" placeholder="e.g. 0" min="0" step="1" required />
+              </div>
+              <div class="form-group">
+                <label>Dependents</label>
+                <input type="number" id="rm-NumberOfDependents" placeholder="e.g. 2" min="0" step="1" />
+              </div>
+              <div class="form-group">
+                <label>Late 30-59 days</label>
+                <input type="number" id="rm-NumberOfTime30-59DaysPastDueNotWorse" placeholder="e.g. 1" min="0" step="1" required />
+              </div>
+              <div class="form-group">
+                <label>Late 60-89 days</label>
+                <input type="number" id="rm-NumberOfTime60-89DaysPastDueNotWorse" placeholder="e.g. 0" min="0" step="1" required />
+              </div>
+              <div class="form-group">
+                <label>Late 90+ days</label>
+                <input type="number" id="rm-NumberOfTimes90DaysLate" placeholder="e.g. 0" min="0" step="1" required />
+              </div>
+            </div>
+            <div class="form-actions">
+              <div class="sample-btns">
+                <span class="sample-label">Quick fill:</span>
+                <button type="button" class="btn btn-sample poor" onclick="fillRoadmapSample()">
+                  <span class="material-icons-round">thumb_down</span> Poor Profile
+                </button>
+              </div>
+              <button type="submit" class="btn btn-primary btn-submit" id="roadmap-submit-btn">
+                <span class="material-icons-round">trending_up</span>
+                <span id="roadmap-btn-text">Generate Roadmap</span>
+                <div class="btn-spinner hidden" id="roadmap-spinner"></div>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Results -->
+        <div id="roadmap-results" class="hidden">
+          <div class="roadmap-header-card card">
+            <div class="roadmap-current-score">
+              <span class="roadmap-score-label">Current Score</span>
+              <span class="roadmap-score-num" id="rm-current-score">–</span>
+              <span class="roadmap-risk" id="rm-current-risk">–</span>
+            </div>
+            <div class="roadmap-arrow">
+              <span class="material-icons-round">arrow_forward</span>
+            </div>
+            <div class="roadmap-potential-score">
+              <span class="roadmap-score-label">Potential Score</span>
+              <span class="roadmap-score-num potential" id="rm-potential-score">–</span>
+              <span class="roadmap-risk" id="rm-potential-risk">–</span>
+            </div>
+          </div>
+          <div class="roadmap-cards-grid" id="roadmap-cards"></div>
+        </div>
+      </div>
+    </section><!-- /section-roadmap -->
+
+
+    <!-- ─── SECTION: Credit Matchmaker ───────────────────────────────────── -->
+    <section class="content-section" id="section-matchmaker">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Credit Matchmaker</h1>
+          <p class="page-subtitle">Personalized card and loan recommendations with your real-time approval odds</p>
+        </div>
+        <button class="btn btn-outline" onclick="importToMatchmaker()" id="matchmaker-import-btn">
+          <span class="material-icons-round">download</span>
+          Import My Credit Score
+        </button>
+      </div>
+
+      <div class="matchmaker-layout">
+        <!-- Matchmaker Header Score Info (Only visible if score is loaded) -->
+        <div class="matchmaker-score-info card hidden" id="matchmaker-score-card">
+          <div class="m-score-details">
+            <span class="m-label">Your Active Score</span>
+            <span class="m-score-num" id="m-active-score">-</span>
+            <span class="m-risk-badge" id="m-active-risk">-</span>
+          </div>
+          <p class="m-desc">The approval odds below are dynamically calculated based on your credit score of <strong id="m-score-highlight">-</strong>.</p>
+        </div>
+
+        <!-- Empty State (Shown when score is not imported) -->
+        <div class="card matchmaker-empty-state" id="matchmaker-empty">
+          <span class="material-icons-round">local_mall</span>
+          <h3>Nhập điểm tín dụng để xem đề xuất</h3>
+          <p>Hãy chạy chấm điểm tín dụng cá nhân trước, sau đó nhập điểm của bạn vào đây để xem các sản phẩm thẻ tín dụng và khoản vay phù hợp nhất cùng tỷ lệ duyệt thành công.</p>
+          <div class="empty-actions">
+            <button class="btn btn-primary" onclick="importToMatchmaker()">
+              <span class="material-icons-round">download</span>
+              Import Last Calculated Score
+            </button>
+            <div class="mock-simulator-row">
+              <span>Hoặc giả lập điểm số nhanh:</span>
+              <div class="mock-btn-group">
+                <button type="button" class="btn btn-sample poor" onclick="simulateMatchmakerScore(520)">520 (Poor)</button>
+                <button type="button" class="btn btn-sample fair" onclick="simulateMatchmakerScore(650)">650 (Fair)</button>
+                <button type="button" class="btn btn-sample good" onclick="simulateMatchmakerScore(710)">710 (Good)</button>
+                <button type="button" class="btn btn-sample excellent" onclick="simulateMatchmakerScore(790)">790 (Excellent)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Tabs & Product Grid (Only visible if score is loaded) -->
+        <div class="matchmaker-results-container hidden" id="matchmaker-results">
+          <div class="matchmaker-filter-row">
+            <div class="filter-pills">
+              <button class="filter-pill active" onclick="filterMatchmakerProducts('all')" id="mm-pill-all">All Products</button>
+              <button class="filter-pill" onclick="filterMatchmakerProducts('card')" id="mm-pill-card">Credit Cards</button>
+              <button class="filter-pill" onclick="filterMatchmakerProducts('loan')" id="mm-pill-loan">Loans</button>
+            </div>
+            <span class="products-count" id="mm-products-count">Showing 5 products</span>
+          </div>
+
+          <!-- Product Grid -->
+          <div class="products-grid" id="matchmaker-products-grid">
+            <!-- Cards and Loans dynamically injected here -->
+          </div>
+        </div>
+      </div>
+    </section><!-- /section-matchmaker -->
+
+    <!-- ─── SECTION: User Profile ────────────────────────────────────────── -->
+    <section class="content-section" id="section-profile">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">User Profile</h1>
+          <p class="page-subtitle">Manage account details and security settings</p>
+        </div>
+      </div>
+
+      <div class="profile-layout">
+        <!-- Account Details Card -->
+        <div class="profile-card card">
+          <div class="card-header">
+            <h2><span class="material-icons-round">account_circle</span> Account Details</h2>
+          </div>
+          <div class="profile-details-body">
+            <div class="profile-avatar-container">
+              <div class="profile-avatar-large" id="profile-avatar-large">U</div>
+              <div class="profile-user-summary">
+                <h3 id="profile-display-name">Username</h3>
+                <span class="profile-badge-role" id="profile-display-role">Borrower</span>
+              </div>
+            </div>
+            
+            <div class="profile-info-grid">
+              <div class="info-row">
+                <span class="info-label"><span class="material-icons-round">person</span> Username</span>
+                <span class="info-value" id="profile-username">username</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label"><span class="material-icons-round">email</span> Email Address</span>
+                <span class="info-value" id="profile-email">email@example.com</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label"><span class="material-icons-round">calendar_today</span> Joined Date</span>
+                <span class="info-value" id="profile-joined-date">May 2026</span>
+              </div>
+            </div>
+
+            <div class="profile-score-summary-box">
+              <div class="summary-score-header">Last Calculated Credit Score</div>
+              <div class="summary-score-content">
+                <div class="summary-score-val" id="profile-last-score">--</div>
+                <div class="summary-score-details">
+                  <span class="summary-score-tier" id="profile-last-tier">Not Assessed</span>
+                  <span class="summary-score-desc" id="profile-last-desc">Please calculate your credit score on the dashboard to update your profile.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security / Change Password Card -->
+        <div class="profile-card card">
+          <div class="card-header">
+            <h2><span class="material-icons-round">lock</span> Change Password</h2>
+          </div>
+          <form id="change-password-form" class="profile-form" onsubmit="submitChangePassword(event)">
+            <div class="form-group">
+              <label for="change-current-password">
+                <span class="material-icons-round">lock_open</span>
+                Current Password
+              </label>
+              <input type="password" id="change-current-password" placeholder="Enter current password" required />
+            </div>
+
+            <div class="form-group">
+              <label for="change-new-password">
+                <span class="material-icons-round">lock</span>
+                New Password
+              </label>
+              <input type="password" id="change-new-password" placeholder="New password (minimum 6 characters)" required />
+            </div>
+
+            <div class="form-group">
+              <label for="change-confirm-password">
+                <span class="material-icons-round">check_circle</span>
+                Confirm New Password
+              </label>
+              <input type="password" id="change-confirm-password" placeholder="Re-enter new password" required />
+            </div>
+
+            <div id="change-password-error" class="form-error-msg hidden"></div>
+            <div id="change-password-success" class="form-success-msg hidden"></div>
+
+            <button type="submit" class="btn btn-primary btn-submit btn-full" id="btn-change-password-submit" style="margin-top: 15px;">
+              <span class="material-icons-round">vpn_key</span>
+              <span id="change-password-btn-text">Update Password</span>
+              <div class="btn-spinner hidden" id="change-password-spinner"></div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section><!-- /section-profile -->
+
+  </main><!-- /main-content -->
+
+
+  <!-- Tooltip popup -->
+  <div class="tooltip-popup" id="tooltip-popup"></div>
+
+  <!-- ═══ AI CHAT WIDGET ══════════════════════════════════════════════════ -->
+  <div class="chat-widget" id="chat-widget">
+
+    <!-- Floating Button -->
+    <button class="chat-fab" id="chat-fab" onclick="toggleChat()" title="Ask AI Assistant">
+      <span class="material-icons-round chat-fab-icon">smart_toy</span>
+      <span class="chat-fab-badge hidden" id="chat-unread"></span>
+    </button>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel hidden" id="chat-panel">
+      <!-- Header -->
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <div class="chat-avatar-bot">
+            <span class="material-icons-round">smart_toy</span>
+          </div>
+          <div>
+            <div class="chat-title">CreditScore AI</div>
+            <div class="chat-status"><span class="status-dot"></span>Online · Ask me anything</div>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button class="chat-hdr-btn" onclick="resetChat()" title="New chat">
+            <span class="material-icons-round">refresh</span>
+          </button>
+          <button class="chat-hdr-btn" onclick="toggleChat()" title="Close">
+            <span class="material-icons-round">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="chat-messages" id="chat-messages"></div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="chat-chips" id="chat-chips">
+        <button class="chip" onclick="useChip(this)">I'm 35, earn $5k/mo, utilization 30%, DTI 35%, never late</button>
+        <button class="chip" onclick="useChip(this)">Age 28, $2000 income, 80% utilization, DTI 70%, 3 late payments</button>
+        <button class="chip" onclick="useChip(this)">I am 50 years old, salary $8000, no debts, never missed a payment</button>
+      </div>
+
+      <!-- Input -->
+      <div class="chat-input-row">
+        <textarea class="chat-textarea" id="chat-input"
+          placeholder="e.g. I'm 35, earn $5k/month, 30% utilization..."
+          rows="1"
+          onkeydown="handleChatKey(event)"
+          oninput="autoResizeTA(this)"></textarea>
+        <button class="chat-send-btn" id="chat-send" onclick="sendChatMessage()">
+          <span class="material-icons-round">send</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ AUTH OVERLAY ═════════════════════════════════════════════════════ -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-container card animate-in">
+      
+      <!-- Brand Logo -->
+      <div class="auth-logo">
+        <div class="logo-icon">
+          <span class="material-icons-round">shield</span>
+        </div>
+        <span class="logo-text">CreditScore AI</span>
+      </div>
+      
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Đăng nhập</button>
+        <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Đăng ký</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form" onsubmit="submitLogin(event)">
+        <div class="form-group">
+          <label for="login-username">
+            <span class="material-icons-round">person</span>
+            Tên đăng nhập hoặc Email
+          </label>
+          <input type="text" id="login-username" placeholder="Nhập tên đăng nhập hoặc email" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="login-password">
+            <span class="material-icons-round">lock</span>
+            Mật khẩu
+          </label>
+          <input type="password" id="login-password" placeholder="Nhập mật khẩu" required />
+        </div>
+
+        <div id="login-error" class="auth-error-msg hidden"></div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-submit" id="btn-login-submit" style="margin-top: 10px;">
+          <span class="material-icons-round">login</span>
+          Đăng nhập
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form hidden" onsubmit="submitRegister(event)">
+        <div class="form-group">
+          <label for="register-username">
+            <span class="material-icons-round">person</span>
+            Tên đăng nhập
+          </label>
+          <input type="text" id="register-username" placeholder="Từ 3-20 ký tự, viết liền" required />
+        </div>
+
+        <div class="form-group">
+          <label for="register-email">
+            <span class="material-icons-round">email</span>
+            Email
+          </label>
+          <input type="email" id="register-email" placeholder="Nhập địa chỉ email" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="register-password">
+            <span class="material-icons-round">lock</span>
+            Mật khẩu
+          </label>
+          <input type="password" id="register-password" placeholder="Tối thiểu 6 ký tự" required />
+        </div>
+
+        <div class="form-group">
+          <label for="register-confirm-password">
+            <span class="material-icons-round">check_circle</span>
+            Xác nhận mật khẩu
+          </label>
+          <input type="password" id="register-confirm-password" placeholder="Nhập lại mật khẩu" required />
+        </div>
+
+        <div class="form-group">
+          <label for="register-role">
+            <span class="material-icons-round">badge</span>
+            Vai trò (Role)
+          </label>
+          <select id="register-role" required>
+            <option value="borrower" selected>Khách hàng cá nhân (Borrower)</option>
+            <option value="analyst">Chuyên viên tín dụng (Analyst)</option>
+          </select>
+        </div>
+
+        <div id="register-error" class="auth-error-msg hidden"></div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-submit" id="btn-register-submit" style="margin-top: 10px;">
+          <span class="material-icons-round">person_add</span>
+          Đăng ký tài khoản
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

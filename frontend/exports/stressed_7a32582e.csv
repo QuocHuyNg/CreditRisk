@@ -1,0 +1,6 @@
+RevolvingUtilizationOfUnsecuredLines,age,NumberOfTime30-59DaysPastDueNotWorse,DebtRatio,MonthlyIncome,NumberOfOpenCreditLinesAndLoans,NumberOfTimes90DaysLate,NumberRealEstateLoansOrLines,NumberOfTime60-89DaysPastDueNotWorse,NumberOfDependents,Predicted_Credit_Score,Predicted_Default_Probability_%,Risk_Tier,Stressed_Credit_Score,Stressed_Default_Probability_%,Stressed_Risk_Tier
+0.15,45,0,0.25,6000,8,0,1,0,1,850,1.43,Excellent,850,1.65,Excellent
+0.05,52,0,0.18,9000,10,0,2,0,0,850,1.0,Excellent,850,1.0,Excellent
+0.75,29,1,0.55,3000,4,1,0,0,2,639,36.94,Fair,636,37.75,Fair
+0.95,35,3,0.7,2500,5,2,0,1,3,561,63.05,Poor,538,70.31,Very Poor
+0.3,40,0,0.35,4500,7,0,1,0,0,850,2.6,Excellent,849,3.07,Excellent
