@@ -1,45 +1,45 @@
-# 📊 CreditScore AI – Intelligent Credit Scoring & Risk-Based Pricing System
+#  CreditScore AI – Intelligent Credit Scoring & Risk-Based Pricing System
 
 **CreditScore AI** là một hệ thống ứng dụng tài chính thông minh (Fintech) được xây dựng để đánh giá rủi ro tín dụng của khách hàng cá nhân dựa trên các thuật toán Học máy (Machine Learning) tiên tiến. Ứng dụng cung cấp các công cụ phân tích rủi ro, dự đoán xác suất vỡ nợ (Probability of Default - PD), quy đổi điểm tín dụng chuẩn quốc tế (300 - 850), định giá khoản vay tối ưu theo mức rủi ro, và giải thích quyết định của mô hình AI (Explainable AI - XAI).
 
 ---
 
-## ✨ Các tính năng cốt lõi
+##  Các tính năng cốt lõi
 
-### 1. 🔐 Hệ thống Xác thực An toàn (User Authentication)
+### 1.  Hệ thống Xác thực An toàn (User Authentication)
 - Màn hình đăng nhập/đăng ký dạng **kính mờ (Glassmorphic Auth Overlay)** bảo vệ hệ thống, ngăn chặn truy cập trái phép vào Dashboard.
 - Mã hóa mật khẩu bảo mật một chiều bằng thuật toán băm **PBKDF2** thông qua thư viện `werkzeug.security`.
 - Lưu trữ tài khoản người dùng bằng cơ sở dữ liệu **SQLite** (`users.db`).
 - Duy trì phiên đăng nhập an toàn bằng cơ chế **Flask Session** (cookie được ký mã hóa).
 - Tự động hiển thị tên người dùng và tạo avatar chữ cái đầu tiên (ví dụ: `Huy` ➔ `H`).
 
-### 2. 🎯 Đánh giá Điểm tín dụng Cá nhân (Personal Credit Scoring)
+### 2.  Đánh giá Điểm tín dụng Cá nhân (Personal Credit Scoring)
 - Biểu mẫu nhập liệu trực quan với **tooltip hướng dẫn chi tiết** cho từng biến tài chính.
 - Trực quan hóa điểm tín dụng bằng biểu đồ đồng hồ đo (**Gauge Chart**) và phân lớp rủi ro từ *Excellent* (Xanh) đến *Very Poor* (Đỏ).
 - Phân tích các nhân tố tài chính tác động tích cực hoặc tiêu cực đến điểm số.
 - **Giải thích AI (Explainable AI - XAI)**: Biểu đồ thác nước (**Waterfall Chart**) mô phỏng cách mô hình cộng/trừ điểm tín dụng từ mức trung vị (Baseline) của tập dữ liệu dựa trên hồ sơ khách hàng.
 
-### 3. 🤖 Trợ lý ảo tư vấn tài chính (NLP Chatbot)
+### 3.  Trợ lý ảo tư vấn tài chính (NLP Chatbot)
 - Cho phép người dùng nhập thông tin hồ sơ tài chính bằng ngôn ngữ tự nhiên (ví dụ: *"Tôi 35 tuổi, thu nhập 5000 USD, tỷ lệ sử dụng thẻ 20%..."*).
 - Bộ phân tích cú pháp ngôn ngữ tự nhiên **Rule-based NLP Parser** tự động bóc tách các chỉ số tài chính từ câu thoại để chấm điểm trực tiếp trong khung chat.
 
-### 4. 📂 Chấm điểm tín dụng Hàng loạt (Batch Scoring)
+### 4.  Chấm điểm tín dụng Hàng loạt (Batch Scoring)
 - Tải lên danh sách hàng nghìn khách hàng dưới dạng file **CSV** hoặc **Excel** (`.xlsx`, `.xls`).
 - **Thuật toán tự động ánh xạ cột (Column Mapping)**: Tự động nhận diện và chuẩn hóa tên cột tiếng Anh hoặc tiếng Việt (có dấu/không dấu, ví dụ: `thunhap` / `tuổi` / `MonthlyIncome` ➔ chuẩn hóa cột dữ liệu đầu vào của mô hình).
 - Xuất file kết quả đã chấm điểm bao gồm các trường điểm tín dụng dự báo, xác suất vỡ nợ và xếp hạng rủi ro để tải xuống nhanh chóng.
 
-### 5. 💰 Định giá Khoản vay theo Mức rủi ro (Risk-Based Pricing)
+### 5.  Định giá Khoản vay theo Mức rủi ro (Risk-Based Pricing)
 - Tự động điều chỉnh lãi suất cho vay (Interest Rate) và phê duyệt hạn mức tối đa (Max Approved Limit) dựa trên điểm tín dụng.
 - Người dùng có thể kéo trượt số tiền vay và chọn các kỳ hạn trả nợ (12 - 60 tháng).
 - Tự động lập lịch trả nợ chi tiết hàng tháng (**Amortization Schedule**) hiển thị rõ số tiền gốc, tiền lãi và số dư giảm dần.
 
-### 6. 📈 Kế hoạch hành động Cải thiện điểm tín dụng (Improvement Roadmap)
+### 6.  Kế hoạch hành động Cải thiện điểm tín dụng (Improvement Roadmap)
 - Chạy thử nghiệm giả lập thay đổi chỉ số (**What-if Analysis**) để xem điểm số biến động tức thời.
 - Tự động đề xuất lộ trình hành động thiết thực được thiết kế theo dạng ngăn kéo trượt mở rộng (**Collapsible Detailed Action Plan**) với các hướng dẫn chi tiết dành riêng cho từng hạng mục rủi ro của bạn.
 
 ---
 
-## 🎯 Phạm vi dự án (In-Scope & Out-of-Scope)
+##  Phạm vi dự án (In-Scope & Out-of-Scope)
 
 ### 1. Trong phạm vi dự án (In-Scope)
 *   **Đánh giá & Chấm điểm tín dụng**:
@@ -83,7 +83,7 @@
 
 ---
 
-## 📐 Phương pháp đề xuất (Proposed Method)
+##  Phương pháp đề xuất (Proposed Method)
 
 Dự án được triển khai theo một quy trình khép kín (End-to-End Pipeline) từ nghiên cứu thực nghiệm dữ liệu (Notebook) đến phát triển ứng dụng web tương tác (Web App). Sơ đồ dưới đây mô tả luồng xử lý và kiến trúc hệ thống:
 
@@ -141,7 +141,7 @@ flowchart TD
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+##  Công nghệ sử dụng
 
 ### Backend (Python/Flask)
 - **Flask**: Máy chủ RESTful API xử lý logic xác thực và dự báo.
@@ -157,7 +157,7 @@ flowchart TD
 
 ---
 
-## ⚙️ Hướng dẫn Khởi chạy ứng dụng (Windows)
+##  Hướng dẫn Khởi chạy ứng dụng (Windows)
 
 Dự án cung cấp sẵn hai tệp tập lệnh `.bat` giúp quản lý server dễ dàng:
 
@@ -175,7 +175,7 @@ Khi không sử dụng nữa, bạn nhấp đúp vào tệp **`stop.bat`**. Tệ
 
 ---
 
-## 📁 Cấu trúc thư mục dự án
+##  Cấu trúc thư mục dự án
 
 ```text
 CreditRiskInFintech/
